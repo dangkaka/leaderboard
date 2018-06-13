@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"net/http"
 	"github.com/dangkaka/leaderboard/scores"
 	"github.com/spf13/viper"
 )
@@ -34,17 +32,9 @@ func main() {
 		panic(err)
 	}
 	db.LogMode(true)
+	//schema migrations
 	db.AutoMigrate(&scores.Scores{})
-	r := gin.Default()
-	r.GET("/scores", func(c *gin.Context) {
-		c.String(http.StatusOK, "Get scores")
-	})
-	r.POST("/scores", func(c *gin.Context) {
-		c.String(http.StatusOK, "Post scores")
-	})
-	r.DELETE("/scores/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		c.String(http.StatusOK, "Delete %s", id)
-	})
+
+	r := NewRouter()
 	r.Run(viper.GetString("server.address"))
 }
