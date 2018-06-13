@@ -13,7 +13,7 @@ func main() {
 	viper.SetConfigFile("config/config.json")
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	dbHost := viper.GetString(`database.host`)
 	dbPort := viper.GetString(`database.port`)
@@ -31,6 +31,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer db.Close()
 	db.LogMode(true)
 	//schema migrations
 	db.AutoMigrate(&scores.Scores{})
