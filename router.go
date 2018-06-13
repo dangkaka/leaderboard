@@ -8,12 +8,12 @@ import (
 
 func NewRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
-	scoresModel := &scores.Model{DB: db}
+	h := scores.New(db)
 	r.Group("/api")
 	{
-		r.GET("/scores", scores.Get(scoresModel))
-		r.POST("/scores", scores.Create(scoresModel))
-		r.DELETE("/scores/:id", scores.Delete(scoresModel))
+		r.GET("/scores", h.Get)
+		r.POST("/scores", h.Create)
+		r.DELETE("/scores/:id", h.Delete)
 	}
 
 	return r
