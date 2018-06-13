@@ -36,6 +36,6 @@ func main() {
 	//schema migrations
 	db.AutoMigrate(&scores.Scores{})
 
-	r := NewRouter()
+	r := NewRouter(db)
 	r.Run(viper.GetString("server.address"))
 }
