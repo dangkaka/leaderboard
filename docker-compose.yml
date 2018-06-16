@@ -1,0 +1,21 @@
+version: '2.3'
+services:
+#  api:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3000:3000"
+#    environment:
+#        - AWS_ACCESS_KEY_ID
+#        - AWS_SECRET_ACCESS_KEY
+#        - AWS_REGION
+  postgres:
+    image: postgres:10.1
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=leaderboard
+    restart: always
+

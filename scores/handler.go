@@ -1,9 +1,10 @@
 package scores
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/dangkaka/leaderboard/helper"
+	"net/http"
 )
 
 type Handler struct {
@@ -17,26 +18,62 @@ func New(db *gorm.DB) *Handler {
 }
 
 func (h *Handler) Get(c *gin.Context) {
-	var scores []Scores
+	var scores []Score
 	if err := h.db.Find(&scores).Error; err != nil {
-		c.AbortWithStatus(404)
-	} else {
-		c.JSON(200, scores)
+		c.JSON(
+			http.StatusInternalServerError,
+			&helper.Error{Message: "Failed to get scores"},
+		)
+		return
 	}
-
+	c.JSON(200, scores)
 }
 
 func (h *Handler) Create(c *gin.Context) {
-	var scores Scores
-	c.BindJSON(&scores)
-	h.db.Create(&scores)
-	c.JSON(200, scores)
+	var score Score
+	err := c.BindJSON(&score)
+
+	if err != nil {
+		helper.ReportError("Failed to decode request body", err)
+		c.JSON(
+			http.StatusBadRequest,
+			helper.Error{Message: "Failed to decode request body"},
+			)
+		return
+	}
+
+	if err := h.db.Create(&score).Error; err != nil {
+		helper.ReportError("Failed to create row", err)
+		c.JSON(
+			http.StatusInternalServerError,
+			helper.Error{Message: "Failed to create row"},
+			)
+		return
+	}
+
+	c.JSON(200, score)
 }
 
 func (h *Handler) Delete(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var scores Scores
-	d := h.db.Where("id = ?", id).Delete(&scores)
-	fmt.Println(d)
-	c.JSON(200, gin.H{"id #" + id: "deleted"})
+	if id == "" {
+		c.JSON(http.StatusBadRequest, &helper.Error{Message: "Empty user id"})
+		return
+	}
+	conn := h.db.Where("id = ?", id).Delete(Score{})
+	if err := conn.Error; err != nil {
+		helper.ReportError("Failed to delete row", err)
+		c.JSON(
+			http.StatusInternalServerError,
+			&helper.Error{Message: "Failed to delete row"},
+		)
+		return
+	} else if conn.RowsAffected == 0 {
+		c.JSON(
+			http.StatusNotFound,
+			&helper.Error{Message: "Row not found"},
+		)
+		return
+	}
+	c.Status(http.StatusOK)
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/spf13/viper"
+	"github.com/zalora/tempo/helper"
 )
 
 func main() {
@@ -13,7 +14,8 @@ func main() {
 	viper.SetConfigFile("config/config.json")
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(err)
+		helper.ReportFatal("Failed to read config: %v", err)
+		return
 	}
 	dbHost := viper.GetString(`database.host`)
 	dbPort := viper.GetString(`database.port`)
@@ -29,12 +31,13 @@ func main() {
 		dbName)
 	db, err := gorm.Open("postgres", dsn)
 	if err != nil {
-		panic(err)
+		helper.ReportFatal("Something went horribly wrong: %v", err)
+		return
 	}
 	defer db.Close()
 	db.LogMode(true)
 	//schema migrations
-	db.AutoMigrate(&scores.Scores{})
+	db.AutoMigrate(&scores.Score{})
 
 	r := NewRouter(db)
 	r.Run(viper.GetString("server.address"))
