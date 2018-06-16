@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/dangkaka/leaderboard/helper"
 	"github.com/dangkaka/leaderboard/scores"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/spf13/viper"
-	"github.com/zalora/tempo/helper"
 )
 
 func main() {

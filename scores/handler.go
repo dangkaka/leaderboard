@@ -22,7 +22,7 @@ func (h *Handler) Get(c *gin.Context) {
 	if err := h.db.Find(&scores).Error; err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
-			&helper.Error{Message: "Failed to get scores"},
+			gin.H{"error": "Failed to get scores"},
 		)
 		return
 	}
@@ -37,7 +37,7 @@ func (h *Handler) Create(c *gin.Context) {
 		helper.ReportError("Failed to decode request body", err)
 		c.JSON(
 			http.StatusBadRequest,
-			helper.Error{Message: "Failed to decode request body"},
+			gin.H{"error": "Failed to decode request body"},
 		)
 		return
 	}
@@ -46,7 +46,7 @@ func (h *Handler) Create(c *gin.Context) {
 		helper.ReportError("Failed to create row", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			helper.Error{Message: "Failed to create row"},
+			gin.H{"error": "Failed to create row"},
 		)
 		return
 	}
@@ -57,7 +57,7 @@ func (h *Handler) Create(c *gin.Context) {
 func (h *Handler) Delete(c *gin.Context) {
 	id := c.Params.ByName("id")
 	if id == "" {
-		c.JSON(http.StatusBadRequest, &helper.Error{Message: "Empty user id"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Empty user id"})
 		return
 	}
 	conn := h.db.Where("id = ?", id).Delete(Score{})
@@ -65,13 +65,13 @@ func (h *Handler) Delete(c *gin.Context) {
 		helper.ReportError("Failed to delete row", err)
 		c.JSON(
 			http.StatusInternalServerError,
-			&helper.Error{Message: "Failed to delete row"},
+			gin.H{"error": "Failed to delete row"},
 		)
 		return
 	} else if conn.RowsAffected == 0 {
 		c.JSON(
 			http.StatusNotFound,
-			&helper.Error{Message: "Row not found"},
+			gin.H{"error": "Row not found"},
 		)
 		return
 	}

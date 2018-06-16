@@ -6,7 +6,7 @@
     "address": ":3000"
   },
   "database": {
-    "host": "localhost",
+    "host": "postgres",
     "port": "5432",
     "user": "postgres",
     "pass": "secret",
