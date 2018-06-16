@@ -1,9 +1,9 @@
 package scores
 
 import (
+	"github.com/dangkaka/leaderboard/helper"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/dangkaka/leaderboard/helper"
 	"net/http"
 )
 
@@ -38,7 +38,7 @@ func (h *Handler) Create(c *gin.Context) {
 		c.JSON(
 			http.StatusBadRequest,
 			helper.Error{Message: "Failed to decode request body"},
-			)
+		)
 		return
 	}
 
@@ -47,7 +47,7 @@ func (h *Handler) Create(c *gin.Context) {
 		c.JSON(
 			http.StatusInternalServerError,
 			helper.Error{Message: "Failed to create row"},
-			)
+		)
 		return
 	}
 
