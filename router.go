@@ -18,6 +18,9 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 		v1.DELETE("/scores/:id", h.Delete)
 	}
 
+	//Api documentation - using swagger
+	r.Static("/swagger", "./swagger")
+
 	return r
 }
 
