@@ -42,6 +42,15 @@ func (h *Handler) Create(c *gin.Context) {
 		return
 	}
 
+	if score.Username == "" || score.Score == 0 {
+		helper.ReportError("Wrong input", err)
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{"error": "Wrong input"},
+		)
+		return
+	}
+
 	if err := h.db.Create(&score).Error; err != nil {
 		helper.ReportError("Failed to create row", err)
 		c.JSON(
