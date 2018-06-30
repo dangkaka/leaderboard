@@ -22,3 +22,14 @@
     docker-compose up -d
     ```
 1. `localhost:3000` is ready to use
+
+## Explore the API
+`http://localhost:3000/swagger`
+
+```
+GET    /health                   
+GET    /api/v1/scores           
+POST   /api/v1/scores       
+DELETE /api/v1/scores/:id
+```
+

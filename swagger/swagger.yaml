@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  description: The API of leaderboard
+  version: 1.0.0
+  title: Leaderboard API
+servers:
+  - url: "http://localhost:3000"
+
+tags:
+- name: Score Management
+  description: create/update/delete scores
+paths:
+  /api/v1/scores:
+    get:
+      tags:
+        - Score Management
+      summary: Get all scores
+      operationId: getScores
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScoresResponse"
+        400:
+          description: Bad Request - See response body for details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        500:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      tags:
+        - Score Management
+      summary: Create new score
+      operationId: createScore
+      requestBody:
+        description: Score object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Score"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+               $ref: "#/components/schemas/ScoreResponse"
+        400:
+          description: Bad Request - See response body for details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        500:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/v1/scores/{scoreId}:
+    delete:
+      tags:
+        - Score Management
+      summary: Delete an existing score
+      operationId: deleteScore
+      parameters:
+        - name: scoreId
+          in: path
+          description: ID of score
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Ok
+        400:
+          description: Bad Request - See response body for details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        404:
+          description: Id not found
+        500:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    Score:
+      type: object
+      required:
+      - username
+      - score
+      properties:
+        username:
+          type: string
+          example: "dangkaka"
+        score:
+          type: integer
+          example: 100
+    ScoreResponse:
+      type: object
+      description: score info
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "dangkaka"
+        score:
+          type: integer
+          example: 10
+        created_at:
+          type: string
+          example: "2018-01-01T07:00:00Z"
+        updated_at:
+          type: string
+          example: "2018-01-01T10:00:00Z"
+      required:
+        - id
+        - username
+        - score
+    ScoresResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoreResponse'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+
