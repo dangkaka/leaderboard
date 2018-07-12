@@ -1,7 +1,7 @@
 var ReactTable = window.ReactTable.default
 
 const columns = [{
-    Header: 'username',
+    Header: 'User name',
     accessor: 'username'
 }, {
     Header: 'Score',
@@ -37,7 +37,7 @@ class App extends React.Component {
     }
 
     render() {
-        return <ReactTable data={this.state.data} columns={columns} />
+        return <ReactTable defaultPageSize={10} showPagination={false} data={this.state.data} columns={columns} />
     }
 }
 
