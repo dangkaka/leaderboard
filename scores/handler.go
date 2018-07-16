@@ -18,8 +18,13 @@ func New(db *gorm.DB) *Handler {
 }
 
 func (h *Handler) Get(c *gin.Context) {
+	query := h.db.Order("score desc")
+	gameId := c.Query("game_id")
+	if gameId != "" {
+		query = query.Where("game_id = ?", gameId)
+	}
 	var scores []Score
-	if err := h.db.Find(&scores).Error; err != nil {
+	if err := query.Find(&scores).Error; err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{"error": "Failed to get scores"},
