@@ -42,7 +42,6 @@ func (h *Handler) Get(c *gin.Context) {
 		query = query.Where("created_at >= ?", time.Now().Add(monthly))
 	}
 	if since != "" {
-
 		query = query.Where("game_id = ?", gameId)
 	}
 	var scores []Score

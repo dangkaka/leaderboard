@@ -15,6 +15,17 @@ paths:
       tags:
         - Score Management
       summary: Get all scores
+      parameters:
+        - in: query
+          name: game_id
+          schema:
+            type: integer
+          description: Game Id
+        - in: query
+          name: since
+          schema:
+            type: string
+          description: daily/weekly/monthly
       operationId: getScores
       responses:
         200:
