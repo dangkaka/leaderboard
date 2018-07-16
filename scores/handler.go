@@ -5,6 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"net/http"
+	"time"
+)
+
+const (
+	daily = -24*time.Hour
+	weekly = -7*24*time.Hour
+	monthly = -30*7*24*time.Hour
 )
 
 type Handler struct {
@@ -21,6 +28,21 @@ func (h *Handler) Get(c *gin.Context) {
 	query := h.db.Order("score desc")
 	gameId := c.Query("game_id")
 	if gameId != "" {
+		query = query.Where("game_id = ?", gameId)
+	}
+
+	//daily, weekly, monthly
+	since := c.Query("since")
+	switch since {
+	case "daily":
+		query = query.Where("created_at >= ?", time.Now().Add(daily))
+	case "weekly":
+		query = query.Where("created_at >= ?", time.Now().Add(weekly))
+	case "monthly":
+		query = query.Where("created_at >= ?", time.Now().Add(monthly))
+	}
+	if since != "" {
+
 		query = query.Where("game_id = ?", gameId)
 	}
 	var scores []Score
