@@ -20,14 +20,6 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 
 	//Api documentation - using swagger
 	r.Static("/swagger", "./swagger")
-	r.Static("/public", "./public")
-
-	r.LoadHTMLFiles("./public/index.tmpl")
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Leaderboard",
-		})
-	})
 
 	return r
 }
