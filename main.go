@@ -37,7 +37,20 @@ func main() {
 	defer db.Close()
 	db.LogMode(true)
 	//schema migrations
-	db.AutoMigrate(&scores.Score{})
+	db.AutoMigrate(&scores.Game{}, &scores.Score{})
+
+	// Seed the db
+	var count int
+	db.Model(&scores.Game{}).Count(&count)
+	if games := viper.GetStringSlice("games"); count == 0 && len(games) > 0 {
+		for _, game := range games {
+			if err := db.Create(&scores.Game{
+				Name: game,
+			}).Error; err != nil {
+				helper.ReportFatal("Something went horribly wrong: %v", err)
+			}
+		}
+	}
 
 	r := NewRouter(db)
 	r.Run(viper.GetString("server.address"))
